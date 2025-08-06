@@ -1,21 +1,36 @@
+// MyCleanApp.swift
 import SwiftUI
-// 恢复@main标记作为应用入口
-//@main
+import SwiftData
+import Cocoa
+@available(macOS 15.0, *)
+@main // 唯一入口
+
+@available(macOS 15.0, *)
+class AppDelegate: NSObject, NSApplicationDelegate {
+    // 应用启动后自动清理30天前的缓存
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        CacheCleaner.clearOldCacheFiles(olderThan: 30)
+    }
+}
+
 struct MyCleanApp: App {
-    // 关联AppDelegate以处理生命周期事件
+    // 关联AppDelegate
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([Item.self])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(sharedModelContainer)
     }
 }
-
-// 实现AppDelegate处理应用生命周期事件
-/*class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        // 应用启动后清理旧缓存
-        CacheCleaner.clearOldCacheFiles()
-    }
-}*/

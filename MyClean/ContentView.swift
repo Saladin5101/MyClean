@@ -1,5 +1,7 @@
+// ContentView.swift
 import SwiftUI
 
+@available(macOS 15.0, *)
 struct ContentView: View {
     @State private var isCleaning = false
     @State private var showAlert = false
@@ -40,20 +42,26 @@ struct ContentView: View {
     private func cleanCache() {
         isCleaning = true
         
-        // 在后台线程执行清理操作
+        // 后台线程执行清理
         DispatchQueue.global().async {
-            let success = CacheCleaner.clearAllCacheFiles()
+            let result = CacheCleaner.cleanAllCache()
             
-            // 回到主线程更新UI
+            // 主线程更新UI
             DispatchQueue.main.async {
                 isCleaning = false
-                alertMessage = success ? "缓存清理成功！" : "缓存清理失败，请稍后重试。"
+                switch result {
+                case .success:
+                    alertMessage = "缓存清理成功！"
+                case .failure(let error):
+                    alertMessage = "缓存清理失败：\(error.localizedDescription)"
+                }
                 showAlert = true
             }
         }
     }
 }
 
+@available(macOS 15.0, *)
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
