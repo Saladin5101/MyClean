@@ -11,7 +11,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: macos-14  # 运行在 macOS 环境（和你开发环境匹配）
+    runs-on: macos-15  # 运行在 macOS 环境（和你开发环境匹配）
     permissions:
       actions: read
       contents: read
@@ -30,7 +30,7 @@ jobs:
           languages: swift  # 声明扫描 Swift 代码
 
       - name: 手动编译 Xcode 项目（关键！替换成你的 scheme 名）
-        run: xcodebuild -scheme MyClean -destination 'platform=macOS,arch=arm64' build
+        run: xcodebuild -MyClean MyClean -destination 'platform=macOS,arch=arm64' build
 
       - name: 执行 CodeQL 分析
         uses: github/codeql-action/analyze@v3
