@@ -20,11 +20,12 @@ jobs:
     steps:
       - name:  checkout 代码
         uses: actions/checkout@v4
-      - name: 查看 Runner 里的 Xcode 版本
+      - name: 自动选最新 Xcode 版本
   run: |
-    # 列出 /Applications 里所有 Xcode 开头的文件夹
-    ls /Applications | grep Xcode
-    # 查看当前默认的 Xcode 版本
+    # 找 /Applications 里最新的 Xcode.app
+    LATEST_XCODE=$(ls /Applications | grep Xcode | sort -V | tail -n 1)
+    sudo xcode-select -s /Applications/$LATEST_XCODE
+    # 验证是否成功
     xcodebuild -version
     
       - name: 选 Xcode 版本（和你本地一致，比如 15.0）
