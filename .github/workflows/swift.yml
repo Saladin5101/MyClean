@@ -1,7 +1,4 @@
-# This workflow will build a Swift project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
-
-name: Swift
+name: Swift (Xcode 项目)
 
 on:
   push:
@@ -10,13 +7,30 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
-    runs-on: macos-latest
-
+  build-test:
+    runs-on: macos-15  # 用具体版本更稳定，避免macos-latest自动升级导致问题
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 选择Xcode版本（用Runner里实际有的版本）
+        run: |
+          # 自动选择Runner里最新的Xcode（避免手动改版本）
+          LATEST_XCODE=$(ls /Applications | grep Xcode | sort -V | tail -n 1)
+          sudo xcode-select -s /Applications/$LATEST_XCODE
+          xcodebuild -version  # 打印当前使用的Xcode版本，方便排查问题
+
+      - name: 构建项目（替换成你的.xcodeproj和scheme名）
+        run: |
+          xcodebuild -project MyClean.xcodeproj \  # 你的Xcode项目文件名
+                    -scheme MyClean \            # 你的scheme名（在Xcode里配置的）
+                    -destination 'platform=macOS,arch=arm64' \
+                    build
+
+      #- name: 运行测试（如果有测试用例，否则可以注释掉）
+      #  run: |
+      #   xcodebuild -project MyClean.xcodeproj \
+      #              -scheme MyClean \
+      #              -destination 'platform=macOS,arch=arm64' \
+      #              test
+
