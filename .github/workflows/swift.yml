@@ -22,8 +22,8 @@ jobs:
 
       - name: 构建项目（替换成你的.xcodeproj和scheme名）
         run: |
-          xcodebuild -project MyClean.xcodeproj \  # 你的Xcode项目文件名
-                    -scheme MyClean \            # 你的scheme名（在Xcode里配置的）
+          xcodebuild -project MyClean.xcodeproj \
+                    -scheme MyClean \
                     -destination 'platform=macOS,arch=arm64' \
                     build
 
