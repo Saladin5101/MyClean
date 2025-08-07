@@ -1,4 +1,4 @@
-name: Swift (Xcode 项目)
+name: Swift
 
 on:
   push:
@@ -8,37 +8,18 @@ on:
 
 jobs:
   build-test:
-    runs-on: macos-15  # 用具体版本更稳定，避免macos-latest自动升级导致问题
+    runs-on: macos-15
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
-      - name: 构建项目（跳过签名）
-      run: |
-        xcodebuild -project MyClean.xcodeproj \
-              -scheme MyClean \
-              -destination 'platform=macOS,arch=arm64' \
-              CODE_SIGNING_REQUIRED=NO \  # 关键：跳过签名检查
-              CODE_SIGN_IDENTITY="" \     # 关键：清空签名身份
-              build
-
       - name: 选择Xcode版本（用Runner里实际有的版本）
         run: |
-          # 自动选择Runner里最新的Xcode（避免手动改版本）
           LATEST_XCODE=$(ls /Applications | grep Xcode | sort -V | tail -n 1)
           sudo xcode-select -s /Applications/$LATEST_XCODE
-          xcodebuild -version  # 打印当前使用的Xcode版本，方便排查问题
-
-      - name: 构建项目（替换成你的.xcodeproj和scheme名）
+          xcodebuild -version
+      - name: 构建项目（跳过签名）
         run: |
-          xcodebuild -project MyClean.xcodeproj \
-                    -scheme MyClean \
-                    -destination 'platform=macOS,arch=arm64' \
-                    build
-
-      #- name: 运行测试（如果有测试用例，否则可以注释掉）
-      #  run: |
-      #   xcodebuild -project MyClean.xcodeproj \
-      #              -scheme MyClean \
-      #              -destination 'platform=macOS,arch=arm64' \
-      #              test
-
+          xcodebuild -project MyClean.xcodeproj -scheme MyClean -destination 'platform=macOS,arch=arm64' CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+      # - name: 运行测试（如果有测试用例，否则可以注释掉）
+      #   run: |
+      #     xcodebuild -project MyClean.xcodeproj -scheme MyClean -destination 'platform=macOS,arch=arm64' test
