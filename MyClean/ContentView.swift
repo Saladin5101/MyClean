@@ -1,4 +1,3 @@
-// ContentView.swift
 import SwiftUI
 
 @available(macOS 15.0, *)
@@ -8,12 +7,12 @@ struct ContentView: View {
     @State private var alertMessage = ""
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 30) {
             Text("MyClean")
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
-            Text("清理您应用的缓存文件，释放存储空间")
+            Text("清理应用缓存，释放存储空间")
                 .foregroundColor(.secondary)
             
             Button(action: cleanCache) {
@@ -34,24 +33,30 @@ struct ContentView: View {
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("操作结果"), message: Text(alertMessage), dismissButton: .default(Text("确定")))
             }
+            
+            // 增加缓存目录显示
+            if let cacheDir = CacheCleaner.getAppCacheDirectory() {
+                Text("缓存目录: \(cacheDir.lastPathComponent)")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
         }
         .padding()
         .frame(minWidth: 400, minHeight: 300)
+        .background(Color.yellow.opacity(0.1))
     }
     
     private func cleanCache() {
         isCleaning = true
         
-        // 后台线程执行清理
         DispatchQueue.global().async {
             let result = CacheCleaner.cleanAllCache()
             
-            // 主线程更新UI
             DispatchQueue.main.async {
                 isCleaning = false
                 switch result {
                 case .success:
-                    alertMessage = "缓存清理成功！"
+                    alertMessage = "缓存清理成功！已跳过系统关键目录"
                 case .failure(let error):
                     alertMessage = "缓存清理失败：\(error.localizedDescription)"
                 }

@@ -1,22 +1,14 @@
-// Logger.swift
 import OSLog
-import Foundation
 
-struct Logger {
-    private static let subsystem = Bundle.main.bundleIdentifier ?? "com.earth.MyClean"
-    private static let cacheCleaner = OSLog(subsystem: subsystem, category: "CacheCleaner")
-    
-    static func logInfo(_ message: String) {
-        os_log("%@", log: cacheCleaner, type: .info, message)
-    }
-    
+// 定义日志子系统
+private let cacheCleaner = OSLog(subsystem: "com.example.MyClean", category: "CacheCleaner")
+
+enum Logger {
     static func logError(_ message: String) {
         os_log("%@", log: cacheCleaner, type: .error, message)
     }
     
-    static func logDebug(_ message: String) {
-        #if DEBUG
-        os_log("%@", log: cacheCleaner, type: .debug, message)
-        #endif
+    static func logInfo(_ message: String) {
+        os_log("%@", log: cacheCleaner, type: .info, message)
     }
 }

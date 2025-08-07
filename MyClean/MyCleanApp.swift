@@ -1,36 +1,50 @@
-// MyCleanApp.swift
 import SwiftUI
-import SwiftData
 import Cocoa
-@available(macOS 15.0, *)
-@main // 唯一入口
 
-@available(macOS 15.0, *)
-class AppDelegate: NSObject, NSApplicationDelegate {
-    // 应用启动后自动清理30天前的缓存
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        CacheCleaner.clearOldCacheFiles(olderThan: 30)
+class WindowDelegate: NSObject, NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        NSApplication.shared.terminate(nil)
     }
 }
 
+@main
 struct MyCleanApp: App {
-    // 关联AppDelegate
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    private let windowDelegate = WindowDelegate()
     
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([Item.self])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+    init() {
+        createWindowManually()
+    }
+    
+    var body: some Scene {
+        EmptyScene()
+    }
+    
+    private func createWindowManually() {
+        let window = NSWindow(
+            contentRect: NSRect(x: 100, y: 100, width: 400, height: 300),
+            styleMask: [.titled, .closable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.delegate = windowDelegate
+        window.title = "MyClean"
+        window.center()
+        
+        // 加载ContentView作为窗口内容（替换空容器）
+        if #available(macOS 15.0, *) {
+            window.contentView = NSHostingView(rootView: ContentView())
+        } else {
+            window.contentView = NSHostingView(rootView: Text("不支持当前系统版本"))
         }
-    }()
+        
+        window.makeKeyAndOrderFront(nil)
+    }
+}
 
+struct EmptyScene: Scene {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            EmptyView()
         }
-        .modelContainer(sharedModelContainer)
     }
 }
