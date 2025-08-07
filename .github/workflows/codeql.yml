@@ -1,4 +1,4 @@
-  name: "CodeQL"
+name: "CodeQL"
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
         languages: swift
 
     - name: Build project
-      run: xcodebuild -scheme MyClean -sdk macosx
+      run: xcodebuild -project MyClean.xcodeproj -scheme MyClean -sdk macosx build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
