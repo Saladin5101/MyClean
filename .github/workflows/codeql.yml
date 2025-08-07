@@ -1,0 +1,36 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "main" ]  # 代码推送到 main 分支时触发扫描
+  pull_request:
+    branches: [ "main" ]  # PR 合并到 main 分支时触发扫描
+  schedule:
+    - cron: '30 12 * * 0'  # 每周日自动扫描（可选，按需调整）
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: macos-14  # 运行在 macOS 环境（和你开发环境匹配）
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name:  checkout 代码
+        uses: actions/checkout@v4
+
+      - name: 选 Xcode 版本（和你本地一致，比如 15.0）
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app
+
+      - name: 初始化 CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: swift  # 声明扫描 Swift 代码
+
+      - name: 手动编译 Xcode 项目（关键！替换成你的 scheme 名）
+        run: xcodebuild -scheme MyClean -destination 'platform=macOS,arch=arm64' build
+
+      - name: 执行 CodeQL 分析
+        uses: github/codeql-action/analyze@v3
