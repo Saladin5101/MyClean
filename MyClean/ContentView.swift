@@ -1,79 +1,74 @@
-//  ContentView.swift
-//  MyClean
-//
-//  Created by minmin on 2025/1/14.
-//
-
 import SwiftUI
 
+@available(macOS 15.0, *)
 struct ContentView: View {
-    @State private var isDeleting = false
-    @State private var deleteStatus: String?  // 用于显示操作结果
+    @State private var isCleaning = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     var body: some View {
-        VStack(spacing: 20) {
-            Button("Clear Cache") {
-                isDeleting = true
-                deleteStatus = nil
-                // 在后台线程执行删除操作，避免阻塞UI
-                DispatchQueue.global().async {
-                    let success = deleteCacheFiles()
-                    // 回到主线程更新UI
-                    DispatchQueue.main.async {
-                        isDeleting = false
-                        deleteStatus = success ? "Cache cleared successfully!" : "Failed to clear cache."
-                    }
+        VStack(spacing: 30) {
+            Text("MyClean")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            Text("清理应用缓存，释放存储空间")
+                .foregroundColor(.secondary)
+            
+            Button(action: cleanCache) {
+                if isCleaning {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .padding()
+                } else {
+                    Text("清理所有缓存")
+                        .padding()
                 }
             }
-            .padding()
-            .background(Color.red)
+            .disabled(isCleaning)
+            .frame(width: 200)
+            .background(Color.blue)
             .foregroundColor(.white)
             .cornerRadius(10)
-            .disabled(isDeleting)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("操作结果"), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+            }
             
-            // 显示加载状态或结果
-            if isDeleting {
-                Text("Deleting cache files...")
+            // 增加缓存目录显示
+            if let cacheDir = CacheCleaner.getAppCacheDirectory() {
+                Text("缓存目录: \(cacheDir.lastPathComponent)")
+                    .font(.caption)
                     .foregroundColor(.gray)
-            } else if let status = deleteStatus {
-                Text(status)
-                    .foregroundColor(status.contains("successfully") ? .green : .red)
             }
         }
-        .frame(minWidth: 300, minHeight: 150)
         .padding()
+        .frame(minWidth: 400, minHeight: 300)
+        .background(Color.yellow.opacity(0.1))
     }
     
-    /// 删除缓存文件（仅删除应用沙盒内的缓存，避免系统文件）
-    private func deleteCacheFiles() -> Bool {
-        // 获取当前应用的缓存目录（更安全，仅操作应用自身缓存）
-        guard let cacheURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
-            return false
-        }
+    private func cleanCache() {
+        isCleaning = true
         
-        do {
-            let fileURLs = try FileManager.default.contentsOfDirectory(
-                at: cacheURL,
-                includingPropertiesForKeys: nil,
-                options: [.skipsHiddenFiles]  // 跳过隐藏文件，避免系统保护文件
-            )
+        DispatchQueue.global().async {
+            let result = CacheCleaner.cleanAllCache()
             
-            for fileURL in fileURLs {
-                try FileManager.default.removeItem(at: fileURL)
+            DispatchQueue.main.async {
+                isCleaning = false
+                switch result {
+                case .success:
+                    alertMessage = "缓存清理成功！已跳过系统关键目录"
+                case .failure(let error):
+                    alertMessage = "缓存清理失败：\(error.localizedDescription)"
+                }
+                showAlert = true
             }
-            print("Cache files deleted successfully.")
-            return true
-        } catch {
-            print("Could not delete cache files: \(error.localizedDescription)")
-            return false
         }
     }
 }
 
-// 预览提供者（保持简洁，避免干扰预览）
+@available(macOS 15.0, *)
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .previewLayout(.sizeThatFits)
     }
 }

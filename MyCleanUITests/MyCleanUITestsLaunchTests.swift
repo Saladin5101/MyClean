@@ -17,7 +17,7 @@ final class MyCleanUITestsLaunchTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    @MainActor
+        @MainActor
     func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()

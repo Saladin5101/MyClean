@@ -1,34 +1,50 @@
-//
-//  MyCleanApp.swift
-//  MyClean
-//
-//  Created by minmin on 2025/1/14.
-//
-
 import SwiftUI
-import SwiftData
-//1
-@available(macOS 14, *)
-//@main
+import Cocoa
 
+class WindowDelegate: NSObject, NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        NSApplication.shared.terminate(nil)
+    }
+}
+
+@main
 struct MyCleanApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+    private let windowDelegate = WindowDelegate()
+    
+    init() {
+        createWindowManually()
+    }
+    
+    var body: some Scene {
+        EmptyScene()
+    }
+    
+    private func createWindowManually() {
+        let window = NSWindow(
+            contentRect: NSRect(x: 100, y: 100, width: 400, height: 300),
+            styleMask: [.titled, .closable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.delegate = windowDelegate
+        window.title = "MyClean"
+        window.center()
+        
+        // 加载ContentView作为窗口内容（替换空容器）
+        if #available(macOS 15.0, *) {
+            window.contentView = NSHostingView(rootView: ContentView())
+        } else {
+            window.contentView = NSHostingView(rootView: Text("不支持当前系统版本"))
         }
-    }()
+        
+        window.makeKeyAndOrderFront(nil)
+    }
+}
 
+struct EmptyScene: Scene {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            EmptyView()
         }
-        .modelContainer(sharedModelContainer)
     }
 }
