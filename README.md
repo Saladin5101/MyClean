@@ -10,6 +10,8 @@ MyClean:一款适用于macOS15及以上版本系统的缓存清理程序
 saladin510@outlook.com
 
 开源协议:
-我们使用GNU General Public License Version 3作为本项目的开源协议,当您准备分发和修改代码并进行二次分发时,请遵守本协议内容!
+
+我们使用GNU GENERAL PUBLIC LICENSE Version 3作为本项目的开源协议,当您准备分发和修改代码并进行二次分发时,请遵守本协议内容!
+
 
 最后,感谢您对本软件的发展做出贡献!
