@@ -12,6 +12,14 @@ jobs:
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
+      - name: 构建项目（跳过签名）
+      run: |
+        xcodebuild -project MyClean.xcodeproj \
+              -scheme MyClean \
+              -destination 'platform=macOS,arch=arm64' \
+              CODE_SIGNING_REQUIRED=NO \  # 关键：跳过签名检查
+              CODE_SIGN_IDENTITY="" \     # 关键：清空签名身份
+              build
 
       - name: 选择Xcode版本（用Runner里实际有的版本）
         run: |
