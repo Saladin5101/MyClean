@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6F498FBA2E5C1D8600456636 /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 6F498FB92E5C1D8000456636 /* COPYING */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		6F8BBB272D36422E00905324 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6F498FB92E5C1D8000456636 /* COPYING */ = {isa = PBXFileReference; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		6F8BBB132D36422D00905324 /* MyClean.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyClean.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F8BBB262D36422E00905324 /* MyCleanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCleanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F8BBB302D36422E00905324 /* MyCleanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCleanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +93,7 @@
 		6F8BBB0A2D36422D00905324 = {
 			isa = PBXGroup;
 			children = (
+				6F498FB92E5C1D8000456636 /* COPYING */,
 				6F8BBB152D36422D00905324 /* MyClean */,
 				6F8BBB292D36422E00905324 /* MyCleanTests */,
 				6F8BBB332D36422E00905324 /* MyCleanUITests */,
@@ -225,6 +231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F498FBA2E5C1D8600456636 /* COPYING in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,3 +1,8 @@
+// MyClean - Test
+// Copyright (C) 2020 Saladin5101
+//
+// This file is part of MyClean, released under the GNU General Public License v3.0 (GPLv3).
+// See LICENSE for full license terms and COPYING for copyright details.
 import XCTest
 @testable import MyClean
 import Foundation
